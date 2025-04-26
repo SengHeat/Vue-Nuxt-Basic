@@ -9,6 +9,8 @@ const { data: message } = await useFetch('/api/user-detail')
 </script>
 
 <template>
+  <h1>My name is: Seng Heat</h1>
+  <h1>Skill: Flutter Laravel</h1>
   <h1>Hello World</h1>
   <h1>{{message?.message}}</h1>
   <NuxtLink to="/about">Go to About Page</NuxtLink>
