@@ -1,0 +1,20 @@
+/* CSS Reset and Basic Setup */
+:root {
+    --bg-color: #0B0E14;
+    --primary-color: #00f7ff; /* Neon Blue */
+    --secondary-color: #ff00c1; /* Neon Pink */
+    /* ... (and all the rest of your styles) ... */
+}
+/* ... etc ... */
+html {
+    scroll-behavior: smooth;
+}
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--body-font);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+/* PASTE ALL YOUR OTHER CSS RULES HERE */

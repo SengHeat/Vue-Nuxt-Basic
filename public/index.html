@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF--8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SENG HEAT - Portfolio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* CSS Reset and Basic Setup */
+    :root {
+      --bg-color: #0B0E14;
+      --primary-color: #00f7ff; /* Neon Blue */
+      --secondary-color: #ff00c1; /* Neon Pink */
+      --accent-color: #FF6E17; /* Fiery Orange */
+      --text-color: #e0e0e0;
+      --text-muted-color: #888888;
+      --border-color: rgba(0, 247, 255, 0.2);
+      --glow-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color), 0 0 15px var(--primary-color);
+      --title-font: 'Poppins', sans-serif;
+      --body-font: 'Roboto', sans-serif;
+      transition: all 0.5s ease; /* Added for smooth theme transitions */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--body-font);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* 3D Background Canvas */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* Custom Scrollbar */
+    body::-webkit-scrollbar {
+      width: 8px;
+    }
+    body::-webkit-scrollbar-track {
+      background: var(--bg-color);
+    }
+    body::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 10px;
+      border: 2px solid var(--bg-color);
+    }
+
+    /* Preloader */
+    .loader-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease;
+    }
+    .loader {
+      border: 4px solid var(--border-color);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Main Content Styling */
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    section {
+      padding: 100px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px 0;
+      z-index: 100;
+      transition: background-color 0.3s ease;
+      background-color: rgba(11, 14, 20, 0.5);
+      backdrop-filter: blur(10px);
+    }
+    /* Fiery Animation for Header */
+    header::before {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background: linear-gradient(to right, var(--accent-color), transparent, var(--accent-color));
+      filter: blur(15px);
+      z-index: -1;
+      animation: fire-glow 3s infinite alternate;
+    }
+    @keyframes fire-glow {
+      from { transform: scaleX(0.8); opacity: 0.5; }
+      to { transform: scaleX(1); opacity: 1; }
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+
+    .logo {
+      font-family: var(--title-font);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-shadow: var(--glow-shadow);
+      position: relative;
+    }
+    /* Fire particles */
+    .logo::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(255,110,23,0.5), transparent 70%);
+      transform: translate(-50%, -50%) rotate(0deg);
+      animation: fire-particles 5s linear infinite;
+      z-index: -1;
+    }
+    @keyframes fire-particles {
+      0% { transform: translate(-50%, 0) scale(0); opacity: 0; }
+      50% { transform: translate(-50%, -50px) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -100px) scale(0.5); opacity: 0; }
+    }
+
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      margin-left: 30px;
+      font-weight: 600;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--primary-color);
+      text-shadow: 0 0 5px var(--primary-color);
+    }
+
+    /* Hero Section */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero-content h1 {
+      font-family: var(--title-font);
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      color: #fff;
+      font-weight: 700;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .hero-content .subtitle {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+      color: var(--text-color);
+    }
+    .typed-cursor {
+      color: var(--primary-color);
+      animation: blink 0.7s infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hero-content .cta-button {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 12px 30px;
+      border: 2px solid var(--primary-color);
+      border-radius: 5px;
+      color: var(--primary-color);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      background: transparent;
+      box-shadow: 0 0 10px rgba(0, 247, 255, 0);
+    }
+
+    .hero-content .cta-button:hover {
+      background-color: var(--primary-color);
+      color: var(--bg-color);
+      box-shadow: var(--glow-shadow);
+    }
+
+    /* Section Titles */
+    .section-title {
+      font-family: var(--title-font);
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 60px;
+      text-transform: uppercase;
+    }
+    .section-title span {
+      color: var(--primary-color);
+    }
+
+    /* About Section */
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 50px;
+      align-items: center;
+    }
+    .about-image {
+      width: 100%;
+      height: auto;
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .about-text p {
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+
+    /* Skills Section */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    .skill-category {
+      border: 1px solid var(--border-color);
+      padding: 2rem;
+      border-radius: 10px;
+      background: rgba(0, 247, 255, 0.05);
+    }
+    .skill-category h3 {
+      font-family: var(--title-font);
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+    }
+    .skill-item {
+      margin-bottom: 1rem;
+    }
+    .skill-item .skill-name {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .skill-bar {
+      width: 100%;
+      height: 10px;
+      background-color: var(--border-color);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .skill-level {
+      height: 100%;
+      background-color: var(--primary-color);
+      border-radius: 5px;
+      box-shadow: var(--glow-shadow);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 1s ease-out;
+    }
+
+    /* Experience Section (Timeline) */
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 3px;
+      background-color: var(--primary-color);
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -1.5px;
+      box-shadow: var(--glow-shadow);
+    }
+    .timeline-container {
+      padding: 10px 40px;
+      position: relative;
+      width: 50%;
+    }
+    .timeline-container.left {
+      left: 0;
+    }
+    .timeline-container.right {
+      left: 50%;
+    }
+    .timeline-container::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      right: -10px;
+      background-color: var(--bg-color);
+      border: 3px solid var(--primary-color);
+      top: 20px;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    .right::after {
+      left: -10px;
+    }
+    .timeline-content {
+      padding: 20px 30px;
+      background: rgba(0, 247, 255, 0.05);
+      border: 1px solid var(--border-color);
+      position: relative;
+      border-radius: 6px;
+    }
+    .timeline-content h3 {
+      font-family: var(--title-font);
+      color: var(--primary-color);
+    }
+    .timeline-content .date {
+      font-size: 0.9rem;
+      color: var(--text-muted-color);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    /* Projects Section */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+    }
+    .project-card {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(11, 14, 20, 0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 0 20px var(--border-color);
+    }
+    .project-image {
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+    }
+    .project-info {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .project-info h3 {
+      font-family: var(--title-font);
+      color: var(--primary-color);
+    }
+    .project-info p {
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      flex-grow: 1;
+    }
+    .project-tags span {
+      display: inline-block;
+      background: rgba(0, 247, 255, 0.1);
+      color: var(--primary-color);
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+    .project-links {
+      margin-top: 1.5rem;
+    }
+    .project-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      margin-right: 1.5rem;
+      font-weight: 600;
+    }
+    .project-links a:hover {
+      color: var(--primary-color);
+    }
+
+    /* Contact Section */
+    .contact-form {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      color: var(--text-color);
+      font-family: var(--body-font);
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 10px var(--border-color);
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--primary-color);
+      border-radius: 5px;
+      color: var(--primary-color);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .submit-btn:hover {
+      background-color: var(--primary-color);
+      color: var(--bg-color);
+      box-shadow: var(--glow-shadow);
+    }
+
+    /* Footer */
+    footer {
+      padding: 30px 0;
+      text-align: center;
+      color: var(--text-muted-color);
+    }
+
+    /* Scroll Animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .about-content { grid-template-columns: 1fr; }
+      .timeline::after { left: 15px; }
+      .timeline-container { width: 100%; padding-left: 50px; padding-right: 15px; }
+      .timeline-container.left, .timeline-container.right { left: 0%; }
+      .timeline-container::after { left: 6px; }
+    }
+
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="loader-wrapper">
+  <div class="loader"></div>
+</div>
+
+<div class="content-wrapper">
+  <header>
+    <div class="container">
+      <nav>
+        <a href="#" class="logo">SENG HEAT</a>
+        <div class="nav-links">
+          <a href="#hero" class="active">Home</a>
+          <a href="#about">About</a>
+          <a href="#skills">Skills</a>
+          <a href="#experience">Experience</a>
+          <a href="#projects">Projects</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>SENG HEAT</h1>
+        <p class="subtitle">I am a <span id="typed-text"></span></p>
+        <a href="#projects" class="cta-button">View My Work</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="reveal">
+    <div class="container">
+      <h2 class="section-title"><span>01.</span> About Me</h2>
+      <div class="about-content"></div>
+    </div>
+  </section>
+
+  <section id="skills" class="reveal">
+    <div class="container">
+      <h2 class="section-title"><span>02.</span> My Skills</h2>
+      <div class="skills-grid"></div>
+    </div>
+  </section>
+
+  <section id="experience" class="reveal">
+    <div class="container">
+      <h2 class="section-title"><span>03.</span> Experience</h2>
+      <div class="timeline"></div>
+    </div>
+  </section>
+
+  <section id="projects" class="reveal">
+    <div class="container">
+      <h2 class="section-title"><span>04.</span> Projects</h2>
+      <div class="projects-grid"></div>
+    </div>
+  </section>
+
+  <section id="contact" class="reveal">
+    <div class="container">
+      <h2 class="section-title"><span>05.</span> Get In Touch</h2>
+      <form class="contact-form">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Your Name" required>
+        </div>
+        <div class="form-group">
+          <input type="email" class="form-control" placeholder="Your Email" required>
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" rows="6" placeholder="Your Message" required></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>Designed & Built by SENG HEAT &copy; 2025</p>
+    </div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+
+<script>
+  // --- PORTFOLIO DATA ---
+  const portfolioData = {
+    about: {
+      imageUrl: "https://i.imgur.com/8K5Q6Tq.png",
+      paragraphs: [
+        "I am a senior Computer Science student at the Royal University of Phnom Penh (RUPP), specializing in Software Development. I have 1+ year of experience as a mobile developer, focusing on building user-friendly, scalable, and market-ready mobile applications. My strengths include seamless API integration, third-party service integration, and delivering clean, maintainable code. I am passionate about contributing to innovative and impactful software solutions and am currently seeking opportunities to apply my skills in real-world development environments.",
+      ]
+    },
+    skills: [
+      {
+        category: "Languages & Frameworks",
+        items: [
+          { name: "Dart", level: "90%" },
+          { name: "Flutter", level: "90%" },
+          { name: "Laravel", level: "85%" },
+          { name: "MySQL", level: "80%" },
+          { name: "PostgreSQL", level: "75%" },
+        ]
+      },
+      {
+        category: "Tools & Service",
+        items: [
+          { name: "Git", level: "90%" },
+          { name: "Github", level: "90%" },
+          { name: "Sourcetree", level: "85%" },
+          { name: "Postman", level: "85%" },
+          { name: "Xcode", level: "75%" },
+          { name: "Android Studio", level: "75%" },
+        ]
+      },
+      {
+        category: "Platforms & Other",
+        items: [
+          { name: "Google Developer Console", level: "80%" },
+          { name: "App Store Connect", level: "80%" },
+          { name: "Linear", level: "70%" },
+          { name: "Open Project", level: "70%" },
+        ]
+      }
+    ],
+    experience: [
+      {
+        position: "left",
+        title: "Backend Developer, DRSB",
+        date: "2025 - Present",
+        description: "Currently working as a backend developer at DRSB, focusing on designing and implementing scalable APIs, optimizing database queries, and ensuring system reliability. Key responsibilities include building secure authentication flows, integrating Redis for caching and token management, and deploying services using modern DevOps practices."
+      },
+      {
+        position: "right",
+        title: "Mobile Developer, Scholarar",
+        date: "January 2024 - 2025",
+        description: "I led the full-cycle development and successful deployment of a high-impact educational mobile app for Android and iOS. Key achievements and responsibilities included: built and maintained a clean, scalable mobile architecture with GetX, Flutter, and Firebase; led deployment to both Google Play and Apple App Store; integrated ABA PayWay payment gateway; and improved app performance through modular architecture and optimized UI/UX."
+      },
+      {
+        position: "left",
+        title: "Mobile Development (Flutter & Laravel)",
+        date: "September 2023 - December 2023",
+        description: "Completed an immersive course at Sala-IT focusing on mobile development using Flutter and Laravel. The curriculum provided hands-on experience in building a full-stack mobile application from scratch."
+      }
+    ],
+    projects: [
+      {
+        title: "Clone Instagram Project",
+        imageUrl: "https://cdn.prod.website-files.com/64baacfcb337b7364622226f/66fc3cec142d82d7e94725fb_styled-instagram-icon.jpg",
+        description: "Developed a full-stack social mobile app using Flutter and Laravel REST API. Features include user authentication, profile views, posts, comments, and likes, all backed by a MySQL database.",
+        tags: ["Flutter", "Laravel", "REST API", "MySQL"],
+        links: { github: "https://github.com/Sengheat/Clone-Instagram-Project", demo: "#" }
+      },
+      {
+        title: "High-Impact Educational App",
+        imageUrl: "https://www.icoderzsolutions.com/blog/wp-content/uploads/2025/04/How-to-Create-an-Educational-App-2286x1200.png",
+        description: "Led the development and deployment of an educational mobile app for Android and iOS that helps students find global scholarship opportunities. The app features push notifications, crash analytics, and Google Analytics integration.",
+        tags: ["Flutter", "GetX", "Firebase", "Google Analytics"],
+        links: { github: "https://github.com/Sengheat/Scholarar", demo: "#" }
+      },
+      {
+        title: "Logistic System",
+        imageUrl: "https://a.storyblok.com/f/277218/1925x1444/59b9dc991a/logistics-business-plan-template.webp",
+        description: "Developed a complete logistic management system that streamlines inventory, shipments, and tracking operations. The project emphasizes scalability, efficiency, and integration with enterprise workflows.",
+        tags: ["Laravel", "Logistics", "Backend"],
+        links: { github: "#", demo: "#" }
+      }
+    ]
+  };
+
+  // --- DYNAMIC CONTENT RENDERERS ---
+  function renderAbout() {
+    const data = portfolioData.about;
+    const container = document.querySelector('.about-content');
+    const paragraphsHtml = data.paragraphs.map(p => `<p>${p}</p>`).join('');
+    container.innerHTML = `
+      <img src="${data.imageUrl}" alt="Seng Heat" class="about-image">
+      <div class="about-text">${paragraphsHtml}</div>
+    `;
+  }
+
+  function renderSkills() {
+    const data = portfolioData.skills;
+    const container = document.querySelector('.skills-grid');
+    container.innerHTML = data.map(category => `
+      <div class="skill-category">
+        <h3>${category.category}</h3>
+        ${category.items.map(skill => `
+          <div class="skill-item">
+            <span class="skill-name">${skill.name}</span>
+            <div class="skill-bar">
+              <div class="skill-level" data-level="${skill.level}"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  }
+
+  function renderExperience() {
+    const data = portfolioData.experience;
+    const container = document.querySelector('.timeline');
+    container.innerHTML = data.map(job => `
+      <div class="timeline-container ${job.position} reveal">
+        <div class="timeline-content">
+          <h3>${job.title}</h3>
+          <span class="date">${job.date}</span>
+          <p>${job.description}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderProjects() {
+    const data = portfolioData.projects;
+    const container = document.querySelector('.projects-grid');
+    container.innerHTML = data.map(project => `
+      <div class="project-card reveal">
+        <div class="project-image" style="background-image: url('${project.imageUrl}')"></div>
+        <div class="project-info">
+          <h3>${project.title}</h3>
+          <p>${project.description}</p>
+          <div class="project-tags">
+            ${project.tags.map(tag => `<span>${tag}</span>`).join('')}
+          </div>
+          <div class="project-links">
+            ${project.links.github ? `<a href="${project.links.github}" target="_blank">GitHub</a>` : ''}
+            ${project.links.demo ? `<a href="${project.links.demo}" target="_blank">Live Demo</a>` : ''}
+            ${project.links.docs ? `<a href="${project.links.docs}" target="_blank">API Docs</a>` : ''}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // --- NEW: DYNAMIC THEME & SEASON LOGIC ---
+  const themes = {
+    day: {
+      '--bg-color': '#F4F7FC',
+      '--primary-color': '#007BFF',
+      '--secondary-color': '#6C757D',
+      '--accent-color': '#FF6B6B',
+      '--text-color': '#212529',
+      '--text-muted-color': '#6C757D',
+      '--border-color': 'rgba(0, 123, 255, 0.2)',
+      '--glow-shadow': '0 0 8px rgba(0, 123, 255, 0.5)',
+    },
+    evening: {
+      '--bg-color': '#2C1A3C',
+      '--primary-color': '#FF8C42',
+      '--secondary-color': '#FF3C83',
+      '--accent-color': '#E85D75',
+      '--text-color': '#F4E8C1',
+      '--text-muted-color': '#A9927D',
+      '--border-color': 'rgba(255, 140, 66, 0.2)',
+      '--glow-shadow': '0 0 8px #FF8C42, 0 0 12px #FF8C42',
+    },
+    night: { // Your original theme
+      '--bg-color': '#0B0E14',
+      '--primary-color': '#00f7ff',
+      '--secondary-color': '#ff00c1',
+      '--accent-color': '#FF6E17',
+      '--text-color': '#e0e0e0',
+      '--text-muted-color': '#888888',
+      '--border-color': 'rgba(0, 247, 255, 0.2)',
+      '--glow-shadow': '0 0 5px #00f7ff, 0 0 10px #00f7ff, 0 0 15px #00f7ff',
+    }
+  };
+
+  function applyTheme(theme) {
+    for (const [key, value] of Object.entries(theme)) {
+      document.documentElement.style.setProperty(key, value);
+    }
+  }
+
+  function updateThemeByTime() {
+    const hour = new Date().getHours();
+    if (hour >= 6 && hour < 17) { // 6am to 5pm
+      applyTheme(themes.day);
+    } else if (hour >= 17 && hour < 20) { // 5pm to 8pm
+      applyTheme(themes.evening);
+    } else { // 8pm to 6am
+      applyTheme(themes.night);
+    }
+  }
+
+  function getSeason() {
+    // Based on Northern Hemisphere seasons
+    const month = new Date().getMonth(); // 0-11
+    if (month === 11 || month === 0 || month === 1) { // Dec, Jan, Feb
+      return 'winter';
+    }
+    // You can add 'spring', 'summer', 'autumn' later with more effects
+    return 'default';
+  }
+
+
+  // --- 3D BACKGROUND (THREE.JS) - MODIFIED FOR SEASONS ---
+  let scene, camera, renderer, points, line;
+  let mouseX = 0, mouseY = 0;
+  let seasonAnimator; // This will hold the animation function for the current season
+
+  function init3D() {
+    const canvas = document.querySelector("#bg-canvas");
+    const currentSeason = getSeason();
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 250;
+
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const pointGeometry = new THREE.BufferGeometry();
+    const numPoints = currentSeason === 'winter' ? 1500 : 300; // More points for snow
+    const positions = new Float32Array(numPoints * 3);
+    const velocities = new Float32Array(numPoints * 3);
+
+    for (let i = 0; i < numPoints; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 800;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 800;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 800;
+
+      if (currentSeason === 'winter') {
+        velocities[i * 3] = (Math.random() - 0.5) * 0.2; // Sideways drift
+        velocities[i * 3 + 1] = Math.random() * -0.5 - 0.2; // Downward speed
+      } else {
+        velocities[i * 3] = (Math.random() - 0.5) * 0.5;
+        velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
+        velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
+      }
+    }
+
+    pointGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    pointGeometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+
+    const pointMaterial = new THREE.PointsMaterial({
+      color: currentSeason === 'winter' ? 0xffffff : 0x00f7ff,
+      size: currentSeason === 'winter' ? 1.5 : 2,
+      transparent: true,
+      opacity: 0.8
+    });
+    points = new THREE.Points(pointGeometry, pointMaterial);
+    scene.add(points);
+
+    // Only setup lines for the default (plexus) effect
+    if (currentSeason === 'default') {
+      const lineGeometry = new THREE.BufferGeometry();
+      const linePositions = new Float32Array(numPoints * numPoints * 3);
+      lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+      const lineMaterial = new THREE.LineBasicMaterial({
+        color: 0x00f7ff,
+        transparent: true,
+        opacity: 0.1
+      });
+      line = new THREE.LineSegments(lineGeometry, lineMaterial);
+      scene.add(line);
+      seasonAnimator = animatePlexus; // Set the plexus animator
+    } else {
+      seasonAnimator = animateSnow; // Set the snow animator
+    }
+
+
+    window.addEventListener("resize", onWindowResize, false);
+    document.addEventListener('mousemove', onMouseMove, false);
+
+    animate(); // Start the main animation loop
+  }
+
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  function onMouseMove(event) {
+    mouseX = (event.clientX - window.innerWidth / 2) * 0.2;
+    mouseY = (event.clientY - window.innerHeight / 2) * 0.2;
+  }
+
+  // --- Animation functions for different seasons ---
+  function animatePlexus() {
+    const positions = points.geometry.attributes.position.array;
+    const velocities = points.geometry.attributes.velocity.array;
+    const linePositions = line.geometry.attributes.position.array;
+    let vertexpos = 0;
+
+    for (let i = 0; i < positions.length; i += 3) {
+      positions[i] += velocities[i];
+      positions[i + 1] += velocities[i + 1];
+      positions[i + 2] += velocities[i + 2];
+
+      if (positions[i + 1] < -400 || positions[i + 1] > 400) velocities[i + 1] = -velocities[i + 1];
+      if (positions[i] < -400 || positions[i] > 400) velocities[i] = -velocities[i];
+      if (positions[i + 2] < -400 || positions[i + 2] > 400) velocities[i + 2] = -velocities[i + 2];
+    }
+
+    let connectDistance = 100;
+    for (let i = 0; i < positions.length; i+=3) {
+      for (let j = i + 3; j < positions.length; j+=3) {
+        const dx = positions[i] - positions[j];
+        const dy = positions[i+1] - positions[j+1];
+        const dz = positions[i+2] - positions[j+2];
+        const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+        if (dist < connectDistance) {
+          linePositions[vertexpos++] = positions[i];
+          linePositions[vertexpos++] = positions[i+1];
+          linePositions[vertexpos++] = positions[i+2];
+          linePositions[vertexpos++] = positions[j];
+          linePositions[vertexpos++] = positions[j+1];
+          linePositions[vertexpos++] = positions[j+2];
+        }
+      }
+    }
+
+    line.geometry.attributes.position.needsUpdate = true;
+    line.geometry.setDrawRange(0, vertexpos / 3);
+    points.geometry.attributes.position.needsUpdate = true;
+  }
+
+  function animateSnow() {
+    const positions = points.geometry.attributes.position.array;
+    const velocities = points.geometry.attributes.velocity.array;
+
+    for (let i = 0; i < positions.length; i += 3) {
+      // Update position based on velocity
+      positions[i] += velocities[i];
+      positions[i + 1] += velocities[i + 1];
+
+      // If snowflake goes off the bottom of the screen...
+      if (positions[i+1] < -400) {
+        // ...reset it to the top with a new random x position.
+        positions[i+1] = 400;
+        positions[i] = (Math.random() - 0.5) * 800;
+      }
+      // If it drifts off the sides
+      if (positions[i] < -400 || positions[i] > 400) {
+        velocities[i] = -velocities[i];
+      }
+    }
+    points.geometry.attributes.position.needsUpdate = true;
+  }
+
+  // --- Main animation loop ---
+  function animate() {
+    requestAnimationFrame(animate); // Loop
+
+    seasonAnimator(); // Call the correct animation function for the season
+
+    // Common camera and render logic
+    camera.position.x += (mouseX - camera.position.x) * 0.05;
+    camera.position.y += (-mouseY - camera.position.y) * 0.05;
+    camera.lookAt(scene.position);
+    renderer.render(scene, camera);
+  }
+
+
+  // --- INITIALIZATION & EVENT LISTENERS ---
+  document.addEventListener('DOMContentLoaded', () => {
+    // --- PRELOADER ---
+    const loader = document.querySelector('.loader-wrapper');
+    loader.style.opacity = '0';
+    setTimeout(() => {
+      loader.style.display = 'none';
+    }, 500);
+
+    // --- RENDER DYNAMIC CONTENT ---
+    renderAbout();
+    renderSkills();
+    renderExperience();
+    renderProjects();
+
+    // --- SET DYNAMIC THEME AND BACKGROUND ---
+    updateThemeByTime(); // Set theme based on time
+    init3D(); // Initialize 3D background based on season
+
+    // --- TYPED.JS ---
+    var typed = new Typed('#typed-text', {
+      strings: ['Flutter Developer', 'Laravel Developer'],
+      typeSpeed: 70,
+      backSpeed: 50,
+      loop: true
+    });
+
+    // --- SCROLL ANIMATIONS ---
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+
+          if (entry.target.id === 'skills') {
+            const skillLevels = document.querySelectorAll('.skill-level');
+            skillLevels.forEach(skill => {
+              skill.style.transform = `scaleX(${parseInt(skill.dataset.level) / 100})`;
+            });
+          }
+        }
+      });
+    }, { threshold: 0.1 });
+    revealElements.forEach(el => observer.observe(el));
+
+    // --- ACTIVE NAV LINK ON SCROLL ---
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (pageYOffset >= sectionTop - 60) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
